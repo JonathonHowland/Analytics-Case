@@ -15,11 +15,28 @@ Vacc = pd.read_excel("BACCForPython.xlsx", sheet_name="Vaccine_Impact_Data")
 #Replace the null values in IHME Population's confidence intervals
 #with the true value (only if both are null)
 
+print(len(IHMEPop))
+
 for i in range(len(IHMEPop)):
     if(np.isnan(IHMEPop["upper"][i]) and np.isnan(IHMEPop["lower"][i])):
         IHMEPop["upper"][i] = IHMEPop["reference"][i]
         IHMEPop["lower"][i] = IHMEPop["reference"][i]
-        
+
+#Remove "All Ages" from IHMEPop
+IHMEPop = IHMEPop[~IHMEPop["age_group_name"].str.contains("All Ages")]
+
+#Combine neonatals into one group
+Young = IHMEPop[IHMEPop["age_group_name"].str.contains("Neo")]
+YoungSum = Young.groupby(["iso_code", "year"]).sum()
+YoungSum.insert(1, "age_group_name", "<1 year")
+
+#Put that information back into the original dataframe
+#and remove the neonatal categories
+IHMEPop = IHMEPop[~IHMEPop["age_group_name"].str.contains("Neo")]
+IHMEPop.append(YoungSum, sort=True)
+IHMEPop.sort_values(by=["iso_code", "age_group_name", "year"])
+IHMEPop.reindex()
+
 #Write the dataframes to a new Excel workbook
 
 with pd.ExcelWriter("BACCFromPython.xlsx") as writer:
