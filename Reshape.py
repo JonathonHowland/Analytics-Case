@@ -68,3 +68,12 @@ NewIHMEVacc = pd.merge(NewIHMEVacc, pcv3_vac,  how='inner', on=['iso_code','year
 NewIHMEVacc = pd.merge(NewIHMEVacc, rota_vac,  how='inner', on=['iso_code','year'])
 
 NewIHMEVacc.head()
+
+#Write the dataframes to a new Excel workbook
+
+with pd.ExcelWriter("Reshaped.xlsx") as writer:
+    UNPop.to_excel(writer, sheet_name="UN Population", index=False)
+    IHMEPop.to_excel(writer, sheet_name="IHME Population", index=False)
+    NewWHO.to_excel(writer, sheet_name="WHO Vaccine Coverage", index=False)
+    NewIHMEVacc.to_excel(writer, sheet_name="IHME Vaccine Coverage", index=False)
+    Vacc.to_excel(writer, sheet_name="Vaccine_Impact_Data", index=False)
