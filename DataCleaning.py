@@ -13,13 +13,12 @@ IHMEVacc = pd.read_excel("BACCForPython.xlsx", sheet_name="IHME Vaccine Coverage
 Vacc = pd.read_excel("BACCForPython.xlsx", sheet_name="Vaccine_Impact_Data")
 
 #Replace the null values in IHME Population's confidence intervals
-#with the true value (only if both are null)
-
-print(len(IHMEPop))
+#with the true value
 
 for i in range(len(IHMEPop)):
-    if(np.isnan(IHMEPop["upper"][i]) and np.isnan(IHMEPop["lower"][i])):
+    if(np.isnan(IHMEPop["upper"][i])):
         IHMEPop["upper"][i] = IHMEPop["reference"][i]
+    elif(np.isnan(IHMEPop["lower"][i])):
         IHMEPop["lower"][i] = IHMEPop["reference"][i]
 
 #Remove "All Ages" from IHMEPop
@@ -36,6 +35,14 @@ IHMEPop = IHMEPop[~IHMEPop["age_group_name"].str.contains("Neo")]
 IHMEPop.append(YoungSum, sort=True)
 IHMEPop.sort_values(by=["iso_code", "age_group_name", "year"])
 IHMEPop.reindex()
+
+#Use DTP3 for other vaccines
+#First, replace the nulls in WHO with 0 to match IHMEVacc
+WHO = WHO.fillna(0)
+
+WHO[(WHO["coverage"]==0).any() and (WHO["vaccine"].str.contains("DTP3"))]["coverage"] = WHO[WHO["vaccine"].str.contains("DTP3")]["coverage"]
+
+print(WHO[WHO["iso_code"].str.contains("AFG")])
 
 #Write the dataframes to a new Excel workbook
 
