@@ -40,7 +40,7 @@ IHMEPop.reindex()
 #First, replace the nulls in WHO with 0 to match IHMEVacc
 WHO = WHO.fillna(0)
 
-WHO[(WHO["coverage"]==0).any() and (WHO["vaccine"].str.contains("DTP3"))]["coverage"] = WHO[WHO["vaccine"].str.contains("DTP3")]["coverage"]
+WHO[(WHO["coverage"]==0).any() and (~WHO["vaccine"].str.contains("DTP3"))]["coverage"] = WHO[WHO["vaccine"].str.contains("DTP3")]["coverage"]
 
 print(WHO[WHO["iso_code"].str.contains("AFG")])
 
