@@ -6,11 +6,11 @@ import numpy as np
 
 #Import sheets from Excel as dataframes
 
-UNPop = pd.read_excel("BACCForPython.xlsx", sheet_name="UN Population")
-IHMEPop = pd.read_excel("BACCForPython.xlsx", sheet_name="IHME Population")
-WHO = pd.read_excel("BACCForPython.xlsx", sheet_name="WHO Vaccine Coverage")
-IHMEVacc = pd.read_excel("BACCForPython.xlsx", sheet_name="IHME Vaccine Coverage")
-Vacc = pd.read_excel("BACCForPython.xlsx", sheet_name="Vaccine_Impact_Data")
+UNPop = pd.read_excel("Reshaped.xlsx", sheet_name="UN Population")
+IHMEPop = pd.read_excel("Reshaped.xlsx", sheet_name="IHME Population")
+WHO = pd.read_excel("Reshaped.xlsx", sheet_name="WHO Vaccine Coverage")
+IHMEVacc = pd.read_excel("Reshaped.xlsx", sheet_name="IHME Vaccine Coverage")
+Vacc = pd.read_excel("Reshaped.xlsx", sheet_name="Vaccine_Impact_Data")
 
 #Replace the null values in IHME Population's confidence intervals
 #with the true value
@@ -37,12 +37,14 @@ IHMEPop.sort_values(by=["iso_code", "age_group_name", "year"])
 IHMEPop.reindex()
 
 #Use DTP3 for other vaccines
-#First, replace the nulls in WHO with 0 to match IHMEVacc
-WHO = WHO.fillna(0)
+#We can directly use fillna() for the WHO dataset
 
-WHO[(WHO["coverage"]==0).any() and (~WHO["vaccine"].str.contains("DTP3"))]["coverage"] = WHO[WHO["vaccine"].str.contains("DTP3")]["coverage"]
+WHO["mcv2_coverage"] = WHO["mcv2_coverage"].fillna(WHO["dtp3_coverage"])
+WHO["Hib3_coverage"] = WHO["Hib3_coverage"].fillna(WHO["dtp3_coverage"])
+WHO["pcv3_coverage"] = WHO["pcv3_coverage"].fillna(WHO["dtp3_coverage"])
+WHO["rota_coverage"] = WHO["rota_coverage"].fillna(WHO["dtp3_coverage"])
 
-print(WHO[WHO["iso_code"].str.contains("AFG")])
+print(WHO.head(100))
 
 #Write the dataframes to a new Excel workbook
 
