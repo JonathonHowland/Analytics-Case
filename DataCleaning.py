@@ -46,6 +46,15 @@ WHO["rota_coverage"] = WHO["rota_coverage"].fillna(WHO["dtp3_coverage"])
 
 print(WHO.head(100))
 
+#We'll use replace() to replace 0s in IHMEVacc
+
+IHMEVacc["mcv2_coverage"] = IHMEVacc["mcv2_coverage"].replace(0, IHMEVacc["dtp3_coverage"])
+IHMEVacc["Hib3_coverage"] = IHMEVacc["Hib3_coverage"].replace(0, IHMEVacc["dtp3_coverage"])
+IHMEVacc["pcv3_coverage"] = IHMEVacc["pcv3_coverage"].replace(0, IHMEVacc["dtp3_coverage"])
+IHMEVacc["rota_coverage"] = IHMEVacc["rota_coverage"].replace(0, IHMEVacc["dtp3_coverage"])
+
+print(IHMEVacc.head(100))
+
 #Write the dataframes to a new Excel workbook
 
 with pd.ExcelWriter("BACCFromPython.xlsx") as writer:
