@@ -46,12 +46,25 @@ WHO["rota_coverage"] = WHO["rota_coverage"].fillna(WHO["dtp3_coverage"])
 
 print(WHO.head(100))
 
+#First, let's remove the values where coverage/reference is 0 and the interval is not
+
+IHMEVacc["mcv2_better"].mask(IHMEVacc["mcv2_coverage"].eq(0), 0, inplace=True)
+IHMEVacc["mcv2_worse"].mask(IHMEVacc["mcv2_coverage"].eq(0), 0, inplace=True)
+IHMEVacc["Hib3_better"].mask(IHMEVacc["Hib3_coverage"].eq(0), 0, inplace=True)
+IHMEVacc["Hib3_worse"].mask(IHMEVacc["Hib3_coverage"].eq(0), 0, inplace=True)
+IHMEVacc["pcv3_better"].mask(IHMEVacc["pcv3_coverage"].eq(0), 0, inplace=True)
+IHMEVacc["pcv3_better"].mask(IHMEVacc["pcv3_coverage"].eq(0), 0, inplace=True)
+IHMEVacc["rota_better"].mask(IHMEVacc["rota_coverage"].eq(0), 0, inplace=True)
+IHMEVacc["rota_worse"].mask(IHMEVacc["rota_coverage"].eq(0), 0, inplace=True)
+
 #We'll use replace() to replace 0s in IHMEVacc
 
 IHMEVacc["mcv2_coverage"] = IHMEVacc["mcv2_coverage"].replace(0, IHMEVacc["dtp3_coverage"])
 IHMEVacc["Hib3_coverage"] = IHMEVacc["Hib3_coverage"].replace(0, IHMEVacc["dtp3_coverage"])
 IHMEVacc["pcv3_coverage"] = IHMEVacc["pcv3_coverage"].replace(0, IHMEVacc["dtp3_coverage"])
 IHMEVacc["rota_coverage"] = IHMEVacc["rota_coverage"].replace(0, IHMEVacc["dtp3_coverage"])
+
+#Now, for years less than or equal to 
 
 print(IHMEVacc.head(100))
 
