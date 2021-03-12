@@ -64,7 +64,16 @@ IHMEVacc["Hib3_coverage"] = IHMEVacc["Hib3_coverage"].replace(0, IHMEVacc["dtp3_
 IHMEVacc["pcv3_coverage"] = IHMEVacc["pcv3_coverage"].replace(0, IHMEVacc["dtp3_coverage"])
 IHMEVacc["rota_coverage"] = IHMEVacc["rota_coverage"].replace(0, IHMEVacc["dtp3_coverage"])
 
-#Now, for years less than or equal to 
+#Now, for years less than or equal to 2018, set intervals to 0 width
+
+IHMEVacc["mcv2_better"] = np.where(IHMEVacc["year"] < 2019, IHMEVacc["mcv2_coverage"], IHMEVacc["mcv2_better"]) 
+IHMEVacc["mcv2_worse"] = np.where(IHMEVacc["year"] < 2019, IHMEVacc["mcv2_coverage"], IHMEVacc["mcv2_worse"])
+IHMEVacc["Hib3_better"] = np.where(IHMEVacc["year"] < 2019, IHMEVacc["Hib3_coverage"], IHMEVacc["Hib3_better"]) 
+IHMEVacc["Hib3_worse"] = np.where(IHMEVacc["year"] < 2019, IHMEVacc["Hib3_coverage"], IHMEVacc["Hib3_worse"])
+IHMEVacc["pcv3_better"] = np.where(IHMEVacc["year"] < 2019, IHMEVacc["pcv3_coverage"], IHMEVacc["pcv3_better"]) 
+IHMEVacc["pcv3_worse"] = np.where(IHMEVacc["year"] < 2019, IHMEVacc["pcv3_coverage"], IHMEVacc["pcv3_worse"])
+IHMEVacc["rota_better"] = np.where(IHMEVacc["year"] < 2019, IHMEVacc["rota_coverage"], IHMEVacc["rota_better"]) 
+IHMEVacc["rota_worse"] = np.where(IHMEVacc["year"] < 2019, IHMEVacc["rota_coverage"], IHMEVacc["rota_worse"])
 
 print(IHMEVacc.head(100))
 
