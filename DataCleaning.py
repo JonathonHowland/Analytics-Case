@@ -18,7 +18,7 @@ Vacc = pd.read_excel("Reshaped.xlsx", sheet_name="Vaccine_Impact_Data")
 for i in range(len(IHMEPop)):
     if(np.isnan(IHMEPop["upper"][i])):
         IHMEPop["upper"][i] = IHMEPop["reference"][i]
-    elif(np.isnan(IHMEPop["lower"][i])):
+    if(np.isnan(IHMEPop["lower"][i])):
         IHMEPop["lower"][i] = IHMEPop["reference"][i]
 
 #Remove "All Ages" from IHMEPop
