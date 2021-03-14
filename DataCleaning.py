@@ -77,6 +77,12 @@ IHMEVacc["rota_worse"] = np.where(IHMEVacc["year"] < 2019, IHMEVacc["rota_covera
 
 print(IHMEVacc.head(100))
 
+#Finally, let's drop the rows where there are null values
+UNPop = UNPop.dropna()
+IHMEPop = IHMEPop.dropna()
+WHO = WHO.dropna()
+IHMEVacc = IHMEVacc.dropna()
+
 #Write the dataframes to a new Excel workbook
 
 with pd.ExcelWriter("BACCFromPython.xlsx") as writer:
