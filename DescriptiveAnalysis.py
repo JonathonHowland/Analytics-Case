@@ -39,3 +39,26 @@ print("Chi^2 = {}, scaled Chi^2 = {}".format(chisq, chiScaled))
 pVal = chi2.sf(chisq, N-1)
 
 print("P-value = {}".format(pVal))
+
+#Create Differences column
+PopTot["Diff"] = PopTot["population"] - PopTot["reference"]
+
+avgDiff = PopTot["Diff"].mean()
+
+print("Average difference between UN population and IHME population is {}".format(avgDiff))
+
+
+
+#Now, repeat the process on vaccine coverages
+
+#Merge datasets
+Tot = pd.merge(WHO, IHMEVacc, how="inner", left_on=["iso_code", "year"], right_on=["iso_code", "year"])
+
+#Pandas deals with identical column names by putting a _x or _y after the original name
+#For example, the WHO dtp3_coverage column is now named dtp3_coverage_x
+#while the IHMEVacc dtp3_coverage column is now named dtp3_coverage_y
+
+#Write the dataframes to a new Excel workbook
+
+with pd.ExcelWriter("CaseAnalysis.xlsx") as writer:
+    PopTot.to_excel(writer, sheet_name="Both Populations", index=False)
