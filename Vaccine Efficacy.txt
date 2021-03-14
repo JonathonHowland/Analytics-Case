@@ -1,0 +1,40 @@
+DTP3 Vaccine Efficacy: 
+
+Countries either give two doses with DTP1 and DTP2, or three doses with DTP1, DTP2, and DTP3 as per current WHO recommendations. Randomised controlled trials using these schedules have shown high and durable rotavirus vaccine efficacy in high-income countries but lower and less durable efficacy in low-income and middle-income countries (LMICs).
+
+https://www.thelancet.com/journals/langlo/article/PIIS2214-109X(19)30412-7/fulltext
+
+
+
+
+
+Rota Vaccine Efficacy: 
+
+https://www.thelancet.com/journals/laninf/article/PIIS1473-3099(19)30126-4/fulltext
+Table 2Median instantaneous vaccine efficacy and 95% credible intervals by duration of follow-up and setting after two or three doses of oral rotavirus vaccination (infant schedules only)
+
+lower vaccine efficacy in lower income countries, The reasons for lower rotavirus vaccine efficacy in resource-poor settings are not well understood.
+
+
+
+
+MCV2 Vaccine Efficacy:
+https://www.who.int/immunization/sage/1_Bishai_Economic_analysis.pdf?ua=1
+
+A research done by John Hopkins: assume vaccine efficacy to be 85% for infants, 95% for toddlers in lower income countries 
+
+the efficacy of measles vaccine, taken to be 0.85 for those vaccinated prior to age
+1 and 0.95 for those vaccinated after age 1.
+
+
+
+
+PCV Vaccine Efficacy 
+https://www.uptodate.com/contents/pneumococcal-vaccination-in-adults
+While PCV13 is recommended for most immunocompromised patients because they are at increased risk of severe infection, efficacy data supporting this recommendation are limited
+
+
+
+HIB Vaccine Efficacy
+https://www.cdc.gov/vaccines/vpd/hib/hcp/about-vaccine.html
+Hib conjugate vaccines are highly effective in producing immunity to Hib bacteria. More than 95% of infants develop protective antibody levels after receiving a primary series of 2 or 3 doses. Invasive Hib disease in a completely vaccinated infant is not common. Although Hib vaccines provide long-lasting immunity, experts do not know the exact duration of immunity
