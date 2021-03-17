@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 import statsmodels.api as sm
 from scipy.stats.distributions import chi2
+from scipy.optimize import linprog
 import matplotlib.pyplot as plt
 
 
@@ -46,6 +47,7 @@ print(VaccTot.columns)
 
 #Merge the datasets
 Final = pd.merge(VaccTot, Vacc, how="inner", left_on=["iso_code"], right_on=["country"])
+Final = pd.merge(Final, PopTot, how="inner", on=["iso_code", "year"])
 
 print(Final)
 
@@ -55,17 +57,47 @@ print(Final.columns)
 Mcv2 = Final[Final["vaccine"]=="MCV2"]
 Mcv2 = Mcv2.rename(columns={"mcv2_coverage": "coverage"})
 Hib3 = Final[Final["vaccine"]=="Hib3"]
-Hib2 = Hib3.rename(columns={"Hib3_coverage": "coverage"})
+Hib3 = Hib3.rename(columns={"Hib3_coverage": "coverage"})
 Pcv3 = Final[Final["vaccine"]=="PCV3"]
 Pcv3 = Pcv3.rename(columns={"pcv3_coverage": "coverage"})
 Rota = Final[Final["vaccine"]=="Rota"]
 Rota = Rota.rename(columns={"rota_coverage": "coverage"})
 
-dfList = [Mcv2, Hib3, Pcv3, Rota]
+#Do it for MCV2 first
+H = 0.5
+df = Mcv2
+df = df[df["year"]==2019]
+df = df[df["coverage"]<H]
+c = -df["dalys_averted_rate"].to_numpy()
+#c = np.reshape(c, [1,len(c)])
+A_eq = np.ones(shape=[1,len(c)])
+A_ub = np.identity(len(c))
+b_ub = H*df["reference"].to_numpy()
+bounds = list(zip((df["coverage"]*df["reference"]).to_numpy(), H*df["reference"].to_numpy()))
+x0 = (df["reference"]*df["coverage"]).to_numpy()
+N = 1.0e6 + np.sum(x0)
 
-for df in dfList:
-    print(df)
-    print(df.columns)
+res = linprog(c=c, A_ub=A_eq, b_ub=N, method="revised simplex",bounds=bounds, x0=x0)
+
+print(Mcv2[Mcv2["year"]==2019])
+
+print(res)
+
+print(np.sum(res.x), np.shape(res.x))
+
+df["Optimal"] = res.x - df["coverage"]*df["reference"]
+
+df["Optimal"] = df["Optimal"].round()
+
+df.to_excel("Test.xlsx", index=False)
+
+if(False):
+    dfList = [Mcv2, Hib3, Pcv3, Rota]
+
+    for df in dfList:
+        df["vac"] = df["coverage"]*df["population"]
+        print(df)
+        print(df.columns)
 
 
     
