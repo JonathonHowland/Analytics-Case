@@ -69,15 +69,22 @@ H = 0.5
 #Do it for MCV2 first
 df = Mcv2
 year = 2022
+#Constant to multiply our number of vaccines by
 c = -df["dalys_averted_rate"].to_numpy()
+#Upper boundary condition (maximum number of vaccines to give)
 A = np.ones(shape=[1,len(c)])
 b_ub = H*df["reference"].to_numpy()
+#Boundary conditions. Don't add more vaccines unless under herd immunity threshold,
+#younger than 5, and in the correct year
 lb = (df["coverage"]*df["reference"]).to_numpy()
 ub = np.where((df["coverage"]<H) & (df["year"]==year) & ((df["age_group"]=="<1 year") | (df["age_group"]=="1 to 4")), H*df["reference"], df["coverage"]*df["reference"])
 bounds = list(zip(lb, ub))
+#We start where we were
 x0 = (df["reference"]*df["coverage"]).to_numpy()
+#Our maximum number of FVPs is equal to our current number plus our vaccine number
 N = 1.0e6 + np.sum(x0)
 
+#Run the optimization
 res = linprog(c=c, A_ub=A, b_ub=N, method="revised simplex",bounds=bounds, x0=x0)
 
 print(res)
