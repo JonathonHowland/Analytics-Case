@@ -7,34 +7,34 @@ import numpy as np
 #Import sheets from Excel as dataframes
 
 UNPop = pd.read_excel("Reshaped.xlsx", sheet_name="UN Population")
-IHMEPop = pd.read_excel("Reshaped.xlsx", sheet_name="IHME Population")
+IHMEPopDirty = pd.read_excel("Reshaped.xlsx", sheet_name="IHME Population")
 WHO = pd.read_excel("Reshaped.xlsx", sheet_name="WHO Vaccine Coverage")
 IHMEVacc = pd.read_excel("Reshaped.xlsx", sheet_name="IHME Vaccine Coverage")
 Vacc = pd.read_excel("Reshaped.xlsx", sheet_name="Vaccine_Impact_Data")
 
 #Replace the null values in IHME Population's confidence intervals
 #with the true value
-
-for i in range(len(IHMEPop)):
-    if(np.isnan(IHMEPop["upper"][i])):
-        IHMEPop["upper"][i] = IHMEPop["reference"][i]
-    if(np.isnan(IHMEPop["lower"][i])):
-        IHMEPop["lower"][i] = IHMEPop["reference"][i]
+for i in range(len(IHMEPopDirty)):
+    if(np.isnan(IHMEPopDirty["upper"][i])):
+        IHMEPopDirty["upper"][i] = IHMEPopDirty["reference"][i]
+    if(np.isnan(IHMEPopDirty["lower"][i])):
+        IHMEPopDirty["lower"][i] = IHMEPopDirty["reference"][i]
 
 #Remove "All Ages" from IHMEPop
-IHMEPop = IHMEPop[~IHMEPop["age_group_name"].str.contains("All Ages")]
+IHMEPopDirty = IHMEPopDirty[~IHMEPopDirty["age_group_name"].str.contains("All Ages")]
 
 #Combine neonatals into one group
-Young = IHMEPop[IHMEPop["age_group_name"].str.contains("Neo")]
+Young = IHMEPopDirty[IHMEPopDirty["age_group_name"].str.contains("Neo")]
 YoungSum = Young.groupby(["iso_code", "year"]).sum()
-YoungSum.insert(1, "age_group_name", "<1 year")
+YoungSum.insert(0, "age_group_name", "<1 year")
+YoungSum = YoungSum.reset_index()
 
 #Put that information back into the original dataframe
 #and remove the neonatal categories
-IHMEPop = IHMEPop[~IHMEPop["age_group_name"].str.contains("Neo")]
-IHMEPop.append(YoungSum, sort=True)
-IHMEPop.sort_values(by=["iso_code", "age_group_name", "year"])
-IHMEPop.reindex()
+IHMEPopNoBabies = IHMEPopDirty[~IHMEPopDirty["age_group_name"].str.contains("Neo")]
+IHMEPopClean = IHMEPopNoBabies.append(YoungSum, sort = True, ignore_index = True)
+IHMEPopClean = IHMEPopClean.sort_values(by=["iso_code", "year","age_group_name"])
+IHMEPop = IHMEPopClean.reindex()
 
 #Use DTP3 for other vaccines
 #We can directly use fillna() for the WHO dataset
