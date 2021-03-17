@@ -63,23 +63,22 @@ Pcv3 = Pcv3.rename(columns={"pcv3_coverage": "coverage"})
 Rota = Final[Final["vaccine"]=="Rota"]
 Rota = Rota.rename(columns={"rota_coverage": "coverage"})
 
-#Do it for MCV2 first
+#Set the herd immunity threshold
 H = 0.5
+
+#Do it for MCV2 first
 df = Mcv2
-df = df[df["year"]==2019]
-df = df[df["coverage"]<H]
+year = 2022
 c = -df["dalys_averted_rate"].to_numpy()
-#c = np.reshape(c, [1,len(c)])
-A_eq = np.ones(shape=[1,len(c)])
-A_ub = np.identity(len(c))
+A = np.ones(shape=[1,len(c)])
 b_ub = H*df["reference"].to_numpy()
-bounds = list(zip((df["coverage"]*df["reference"]).to_numpy(), H*df["reference"].to_numpy()))
+lb = (df["coverage"]*df["reference"]).to_numpy()
+ub = np.where((df["coverage"]<H) & (df["year"]==year) & ((df["age_group"]=="<1 year") | (df["age_group"]=="1 to 4")), H*df["reference"], df["coverage"]*df["reference"])
+bounds = list(zip(lb, ub))
 x0 = (df["reference"]*df["coverage"]).to_numpy()
 N = 1.0e6 + np.sum(x0)
 
-res = linprog(c=c, A_ub=A_eq, b_ub=N, method="revised simplex",bounds=bounds, x0=x0)
-
-print(Mcv2[Mcv2["year"]==2019])
+res = linprog(c=c, A_ub=A, b_ub=N, method="revised simplex",bounds=bounds, x0=x0)
 
 print(res)
 
@@ -91,13 +90,22 @@ df["Optimal"] = df["Optimal"].round()
 
 df.to_excel("Test.xlsx", index=False)
 
+
+#Here's the code to do it for all the vaccines
 if(False):
     dfList = [Mcv2, Hib3, Pcv3, Rota]
+    resList = []
 
     for df in dfList:
-        df["vac"] = df["coverage"]*df["population"]
-        print(df)
-        print(df.columns)
+        c = -df["dalys_averted_rate"].to_numpy()
+        A = np.ones(shape=[1,len(c)])
+        b_ub = H*df["reference"].to_numpy()
+        lb = (df["coverage"]*df["reference"]).to_numpy()
+        ub = np.where((df["coverage"]<H) & (df["year"]==year) & ((df["age_group"]=="<1 year") | (df["age_group"]=="1 to 4")), H*df["reference"], df["coverage"]*df["reference"])
+        bounds = list(zip(lb, ub))
+        x0 = (df["reference"]*df["coverage"]).to_numpy()
+        N = 1.0e6 + np.sum(x0)
 
-
-    
+        res = linprog(c=c, A_ub=A, b_ub=N, method="revised simplex",bounds=bounds, x0=x0)
+        resList.append(res)
+        
